@@ -26,7 +26,7 @@ export type RateLimitHelper = {
   onRateLimiterResponse?: (response: RatelimitResponse) => void;
 };
 
-export const API_KEY_RATE_LIMIT = 30;
+export const API_KEY_RATE_LIMIT = 300;
 
 export function rateLimiter() {
   const { UNKEY_ROOT_KEY } = process.env;
@@ -54,7 +54,7 @@ export function rateLimiter() {
     core: new Ratelimit({
       rootKey: UNKEY_ROOT_KEY,
       namespace: "core",
-      limit: 10,
+      limit: 1000,
       duration: "60s",
       timeout,
       onError,
@@ -70,7 +70,7 @@ export function rateLimiter() {
     common: new Ratelimit({
       rootKey: UNKEY_ROOT_KEY,
       namespace: "common",
-      limit: 200,
+      limit: 2000,
       duration: "60s",
       timeout,
       onError,
@@ -78,7 +78,7 @@ export function rateLimiter() {
     forcedSlowMode: new Ratelimit({
       rootKey: UNKEY_ROOT_KEY,
       namespace: "forcedSlowMode",
-      limit: 1,
+      limit: 100,
       duration: "30s",
       timeout,
       onError,
@@ -94,7 +94,7 @@ export function rateLimiter() {
     ai: new Ratelimit({
       rootKey: UNKEY_ROOT_KEY,
       namespace: "ai",
-      limit: 20,
+      limit: 200,
       duration: "1d",
       timeout,
       onError,
@@ -102,7 +102,7 @@ export function rateLimiter() {
     sms: new Ratelimit({
       rootKey: UNKEY_ROOT_KEY,
       namespace: "sms",
-      limit: 50,
+      limit: 500,
       duration: "5m",
       timeout,
       onError,
@@ -110,7 +110,7 @@ export function rateLimiter() {
     smsMonth: new Ratelimit({
       rootKey: UNKEY_ROOT_KEY,
       namespace: "smsMonth",
-      limit: 250,
+      limit: 2500,
       duration: "30d",
       timeout,
       onError,
