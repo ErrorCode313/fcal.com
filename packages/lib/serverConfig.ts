@@ -7,18 +7,32 @@ import { getAdditionalEmailHeaders } from "./getAdditionalEmailHeaders";
 
 function detectTransport(): SendmailTransport.Options | SMTPConnection.Options | string {
   if (process.env.RESEND_API_KEY) {
-    const transport = {
-      host: "smtp.resend.com",
-      secure: true,
-      port: 465,
-      auth: {
-        user: "resend",
-        pass: process.env.RESEND_API_KEY,
-      },
-    };
+  return {
+    name: "resend-api",
+    send: async (mail, callback) => {
+      try {
+        const res = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: process.env.EMAIL_FROM,
+            to: mail.data.to,
+            subject: mail.data.subject,
+            html: mail.data.html,
+          }),
+        });
+        if (!res.ok) throw new Error(await res.text());
+        callback(null, { response: "Sent via Resend API" });
+      } catch (err) {
+        callback(err);
+      }
+    },
+  };
+}
 
-    return transport;
-  }
 
   if (process.env.EMAIL_SERVER) {
     return process.env.EMAIL_SERVER;
