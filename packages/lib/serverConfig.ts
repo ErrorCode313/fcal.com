@@ -7,9 +7,9 @@ import { getAdditionalEmailHeaders } from "./getAdditionalEmailHeaders";
 
 function detectTransport(): SendmailTransport.Options | SMTPConnection.Options | string {
   if (process.env.RESEND_API_KEY) {
-  return {
+  const transport: any = {
     name: "resend-api",
-    send: async (mail, callback) => {
+    send: async (mail: any, callback: any) => {
       try {
         const res = await fetch("https://api.resend.com/emails", {
           method: "POST",
@@ -31,7 +31,10 @@ function detectTransport(): SendmailTransport.Options | SMTPConnection.Options |
       }
     },
   };
+
+  return transport as any;
 }
+
 
 
   if (process.env.EMAIL_SERVER) {
